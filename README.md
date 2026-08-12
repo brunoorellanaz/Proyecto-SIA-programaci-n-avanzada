@@ -8,7 +8,9 @@
     * Disponibilidad: _Bool_.
   - Clase para los pasajeros:
     * ID del pasajero: _Int_.
-    * Numero de bus: _Buses_.
+    * Edad del pasajero: _Int_.
+    * Nombre del pasajero: _String_.
+    * Numero de bus: _Bus_.
     * ...algomas.
   - Clase para el viaje:
     * ID de viaje: _Int_.
