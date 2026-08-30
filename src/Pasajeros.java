@@ -1,15 +1,27 @@
 
 public class Pasajeros {
-    public int id_pasajero;
-    public Bus id_bus;
-    public int edad;
-    public String nombre;
+    private int id_pasajero;
+    private Buses bus;
+    private int edad;
+    private String nombre;
     
-    public Pasajeros(int id_pasajero, Bus id_bus, int edad, String nombre){
+    public Pasajeros(int id_pasajero, int edad, String nombre){
         this.id_pasajero = id_pasajero;
-        this.id_bus = id_bus;
         this.edad = edad;
         this.nombre = nombre;
     }
+    //setters
+    // public void setIdPasajero(int id_pasajero){this.id_pasajero = id_pasajero;}
+    public void setBus(Buses bus){this.bus = bus;}
+    public void setEdad(int edad){this.edad = edad;}
+    public void setNombre(String nombre){this.nombre = nombre;}
+
+    //getters
+    public int getIdPasajero(){return id_pasajero;}
+    public Buses getBus() {return bus;}
+    public int getEdad(){return edad;}
+    public String getNombre(){return nombre;}
+
+    
 }
  
