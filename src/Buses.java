@@ -22,6 +22,7 @@ public class Buses {
     public int getIdBus(){ return id_bus;}
     public int getCapacity(){ return capacity;}
     public boolean getDisponibility(){ return disponibility;}
+    public ArrayList<Pasajeros> getPasajeros(){return pasajeros;}
     
 
     public void mostrarPasajeros(){
@@ -34,7 +35,7 @@ public class Buses {
     public void agregarPasajero(Pasajeros nuevo_pasajero){
         if (disponibility && pasajeros.size()< capacity){
             pasajeros.add(nuevo_pasajero);
-            nuevo_pasajero.setBus(this)
+            nuevo_pasajero.setBus(this);
         }
        
         if(pasajeros.size() == capacity){disponibility = false;}
