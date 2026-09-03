@@ -22,5 +22,5 @@
     * Agregar origen y destino.
     * Dia y hora.
   - Cancelar viaje.
-  - //aqui agregamos mas.
+  - Reagendar viaje.
 

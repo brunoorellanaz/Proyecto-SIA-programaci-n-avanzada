@@ -1,7 +1,9 @@
-import java.util.*;
-import java.time.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.time.LocalTime;
 
 public class Viajes {
+
     private int id_viaje;
     private String origen;
     private String destino;
@@ -10,72 +12,160 @@ public class Viajes {
     private double costoPasaje;
     private LocalTime horaInicio;
 
-    
     public Viajes(int id_viaje, String origen, String destino,
-                  double costoViaje, double costoPasaje, LocalTime horaInicio){
+                  double costoViaje, double costoPasaje,
+                  LocalTime horaInicio) {
+
         this.id_viaje = id_viaje;
         this.origen = origen;
         this.destino = destino;
         this.costoViaje = costoViaje;
         this.costoPasaje = costoPasaje;
-        buses = new HashMap<>();
         this.horaInicio = horaInicio;
-
-        
+        this.buses = new HashMap<>();
     }
-     //setters
-    public void setIdViaje(int id_viaje){this.id_viaje = id_viaje;}
-    public void setOrigen(String origen){this.origen = origen;}
-    public void setDestino(String destino){this.destino = destino;}
-    public void setCostoViaje(double costoViaje){this.costoViaje = costoViaje;}
-    public void setCostoPasaje(double CostoPasaje){this.costoPasaje = costoPasaje;}
-    public void setHoraInicio(LocalTime horaInicio){this.horaInicio = horaInicio;}
-    
-    //getters
-    public int getIdViaje(){return id_viaje;}
-    public String getOrigen(){return origen;}
-    public String getDestino(){return destino;}
-    public double getCostoViaje(){return costoViaje;}
-    public double getCostoPasaje(){return costoPasaje;}
-    public LocalTime getHoraInicio() {return horaInicio;}
 
-    public void agregarBus(Buses bus){
-        if( estaDisponible() ){
+    // Setters
+    public void setIdViaje(int id_viaje) {
+        this.id_viaje = id_viaje;
+    }
+
+    public void setOrigen(String origen) {
+        this.origen = origen;
+    }
+
+    public void setDestino(String destino) {
+        this.destino = destino;
+    }
+
+    public void setCostoViaje(double costoViaje) {
+        this.costoViaje = costoViaje;
+    }
+
+    public void setCostoPasaje(double costoPasaje) {
+        this.costoPasaje = costoPasaje;
+    }
+
+    public void setHoraInicio(LocalTime horaInicio) {
+        this.horaInicio = horaInicio;
+    }
+
+    // Getters
+    public int getIdViaje() {
+        return id_viaje;
+    }
+
+    public String getOrigen() {
+        return origen;
+    }
+
+    public String getDestino() {
+        return destino;
+    }
+
+    public double getCostoViaje() {
+        return costoViaje;
+    }
+
+    public double getCostoPasaje() {
+        return costoPasaje;
+    }
+
+    public LocalTime getHoraInicio() {
+        return horaInicio;
+    }
+
+    public HashMap<Integer, Buses> getBuses() {
+        return buses;
+    }
+
+    // Agregar bus al viaje
+    public void agregarBus(Buses bus) {
+
+        if (estaDisponible()) {
             buses.put(bus.getIdBus(), bus);
         }
-        return;
     }
 
-    public boolean estaDisponible(){
-        return (LocalTime.now()).isBefore(horaInicio);
-    }
-    
-    public boolean esRentable(Buses bus){
-       
-        if( (( bus.getPasajeros() ).size() * costoPasaje) <= costoViaje){
-            reasignarBus(bus);
-            return false;
-        }
-        return true;
-       
+    // Verificar si el viaje todavía está disponible
+    public boolean estaDisponible() {
+        return LocalTime.now().isBefore(horaInicio);
     }
 
-    public void reasignarBus(Buses bus){
-        
-        for( Buses i : buses.values()  ){
-            ArrayList<Pasajeros> listPasajeros = bus.getPasajeros();
-            if( bus.getIdBus() == i.getIdBus() ) {continue;}
-            
-            while (i.getCapacity() - i.getPasajeros().size() > 0
-                    && listPasajeros.size() > 0) {
+    // Buscar un bus con espacio
+    public Buses buscarBusDisponible() {
 
-                i.agregarPasajero( listPasajeros.get(0) );
-                listPasajeros.remove(0);
+        for (Buses bus : buses.values()) {
+
+            if (bus.getDisponibility()
+                    && bus.getPasajeros().size() < bus.getCapacity()) {
+
+                return bus;
             }
         }
-    }   
 
-    
-        
+        return null;
+    }
+
+    // Comprobar rentabilidad
+    public boolean esRentable(Buses bus) {
+
+        double ingresos =
+                bus.getPasajeros().size() * costoPasaje;
+
+        return ingresos > costoViaje;
+    }
+
+    // Reasignar pasajeros
+    public void reasignarBus(Buses bus) {
+
+        ArrayList<Pasajeros> pasajerosBus =
+                new ArrayList<>(bus.getPasajeros());
+
+        for (Buses otroBus : buses.values()) {
+
+            if (otroBus.getIdBus() == bus.getIdBus()) {
+                continue;
+            }
+
+            while (
+                otroBus.getPasajeros().size() < otroBus.getCapacity()
+                && !pasajerosBus.isEmpty()
+            ) {
+
+                Pasajeros pasajero = pasajerosBus.get(0);
+
+                bus.eliminarPasajero(pasajero);
+                otroBus.agregarPasajero(pasajero);
+
+                pasajerosBus.remove(pasajero);
+            }
+
+            if (pasajerosBus.isEmpty()) {
+                break;
+            }
+        }
+    }
+
+    // Mostrar información del viaje
+    public void mostrarViaje() {
+
+        System.out.println("\n--- VIAJE ---");
+        System.out.println("ID viaje: " + id_viaje);
+        System.out.println("Origen: " + origen);
+        System.out.println("Destino: " + destino);
+        System.out.println("Hora: " + horaInicio);
+        System.out.println("Costo viaje: $" + costoViaje);
+        System.out.println("Costo pasaje: $" + costoPasaje);
+
+        for (Buses bus : buses.values()) {
+
+            System.out.println(
+                "Bus " + bus.getIdBus()
+                + " | Pasajeros: "
+                + bus.getPasajeros().size()
+                + "/" + bus.getCapacity()
+            );
+        }
+    }
 }
-
