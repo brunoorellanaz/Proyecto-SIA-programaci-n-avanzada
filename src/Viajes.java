@@ -135,10 +135,13 @@ public class Viajes {
 
                 Pasajeros pasajero = pasajerosBus.get(0);
 
-                bus.eliminarPasajero(pasajero);
-                otroBus.agregarPasajero(pasajero);
-
-                pasajerosBus.remove(pasajero);
+                try {
+                    otroBus.agregarPasajero(pasajero); //agregar al nuevo destino
+                    bus.eliminarPasajero(pasajero); //y si se agrega al nuevo, sacarlo del origen
+                    pasajerosBus.remove(pasajero);
+                } catch(CapacidadExcedidaException error) {
+                    break;
+                }
             }
 
             if (pasajerosBus.isEmpty()) {

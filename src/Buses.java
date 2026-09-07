@@ -27,6 +27,8 @@ public class Buses {
         this.disponibility = disponibility;
     }
 
+    public void setPasajeros(ArrayList<Pasajeros> pasajeros) { this.pasajeros = pasajeros; }
+
     // Getters
     public int getIdBus() {
         return id_bus;
@@ -44,16 +46,12 @@ public class Buses {
         return pasajeros;
     }
 
-    // Agregar pasajero
-    public boolean agregarPasajero(Pasajeros nuevo_pasajero) {
-
-        if (!disponibility) {
-            return false;
-        }
-
+    // Agregar pasajero versión 1: recibe un objeto pasajeros ya hecho
+    public void agregarPasajero(Pasajeros nuevo_pasajero) throws CapacidadExcedidaException {
         if (pasajeros.size() >= capacity) {
             disponibility = false;
-            return false;
+            throw new CapacidadExcedidaException(
+                "El bus " + id_bus + " no tiene asientos disponibles");
         }
 
         pasajeros.add(nuevo_pasajero);
@@ -62,8 +60,15 @@ public class Buses {
         if (pasajeros.size() >= capacity) {
             disponibility = false;
         }
+    }
 
-        return true;
+    //Versión 2 de agregar pasajero: recibe datos sueltos y crea el pasajero
+    //sobrecarga del método agregar pasajero:
+    public Pasajeros agregarPasajero(int id, int edad, String nombre) 
+                throws CapacidadExcedidaException {
+        Pasajeros p = new Pasajeros(id, edad, nombre);
+        agregarPasajero(p);
+        return p;
     }
 
     // Eliminar pasajero
