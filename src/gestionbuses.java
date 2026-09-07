@@ -3,9 +3,10 @@ import java.time.LocalTime;
 
 public class gestionbuses {
 
-    private ArrayList<Buses> listaBuses;
+    private ArrayList<Buses> listaBuses; //flota base
     private ArrayList<Pasajeros> listaPasajeros;
     private ArrayList<Viajes> listaViajes;
+    private int contadorViajes = 1;
 
     private int contadorViajes = 1;
 
@@ -15,11 +16,15 @@ public class gestionbuses {
         listaPasajeros = new ArrayList<>();
         listaViajes = new ArrayList<>();
 
-        // Buses iniciales
+        // flota base: la empresa tiene estos buses actualmente y se guardan en (id + capacidad)
         listaBuses.add(new Buses(1, 40));
         listaBuses.add(new Buses(2, 40));
         listaBuses.add(new Buses(3, 50));
     }
+
+    public ArrayList<Buses> getListaBuses() { return listaBuses; }
+    public ArrayList<Pasajeros> getListaPasajeros() { return listaPasajeros; }
+    public ArrayList<Viajes> getListaViajes() { return listaViajes; }
 
     // =====================================================
     // RESERVAR VIAJE
@@ -89,8 +94,10 @@ public class gestionbuses {
             );
 
             // Agregar todos los buses disponibles al viaje
-            for (Buses bus : listaBuses) {
-                viajeEncontrado.agregarBus(bus);
+            //cada viaje recibe sus propios buses que son copias de la flota actual disponible
+            //y no el objeto bus compartido, asi la ocupación no se filtra entre viajes
+            for (Buses busBase : listaBuses) {
+                viajeEncontrado.agregarBus(new Buses(busBase.getIdBus(), busBase.getCapacity()));
             }
 
             listaViajes.add(viajeEncontrado);
