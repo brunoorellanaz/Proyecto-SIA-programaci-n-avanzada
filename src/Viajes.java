@@ -132,8 +132,12 @@ public class Viajes {
                 Pasajeros pasajero = bus.obtenerPasajero(0);
 
 
-                bus.eliminarPasajero(pasajero);
-                otroBus.agregarPasajero(pasajero);
+                try {
+                    otroBus.agregarPasajero(pasajero);
+                    bus.eliminarPasajero(pasajero);
+                } catch (CapacidadExcedidaException e) {
+                    break;
+    }
             }
 
             if ( bus.getCantidadPasajeros() <= 0) {
