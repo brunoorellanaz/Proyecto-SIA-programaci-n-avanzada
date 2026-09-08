@@ -1,5 +1,4 @@
 public class Pasajeros {
-
     private int id_pasajero;
     private Buses bus;
     private int edad;
@@ -12,36 +11,19 @@ public class Pasajeros {
         this.bus = null;
     }
 
-    // Setters
-    public void setBus(Buses bus) {
-        this.bus = bus;
-    }
+    public void setBus(Buses bus) { this.bus = bus; }
+    public void setEdad(int edad) { this.edad = edad; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+    public void setIdPasajero(int id_pasajero) { this.id_pasajero = id_pasajero; }
 
-    public void setEdad(int edad) {
-        this.edad = edad;
-    }
+    public int getIdPasajero() { return id_pasajero; }
+    public Buses getBus() { return bus; }
+    public int getEdad() { return edad; }
+    public String getNombre() { return nombre; }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-    public void setIdPasajero(int id_pasajero){
-        this.id_pasajero = id_pasajero;
-    }
-
-    // Getters
-    public int getIdPasajero() {
-        return id_pasajero;
-    }
-
-    public Buses getBus() {
-        return bus;
-    }
-
-    public int getEdad() {
-        return edad;
-    }
-
-    public String getNombre() {
-        return nombre;
+    @Override
+    public String toString() {
+        return "ID: " + id_pasajero + " | Nombre: " + nombre + " | Edad: " + edad
+                + " | Bus: " + (bus == null ? "Sin asignar" : bus.getIdBus());
     }
 }

@@ -1,170 +1,122 @@
-import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.time.LocalTime;
 
 public class Viajes {
-
     private int id_viaje;
     private String origen;
     private String destino;
     private HashMap<Integer, Buses> buses;
     private double costoViaje;
     private double costoPasaje;
-    private LocalTime horaInicio;
+    private LocalDateTime fechaHoraInicio;
+    private int duracionMinutos;
 
     public Viajes(int id_viaje, String origen, String destino,
                   double costoViaje, double costoPasaje,
-                  LocalTime horaInicio) {
-
+                  LocalDateTime fechaHoraInicio) {
         this.id_viaje = id_viaje;
         this.origen = origen;
         this.destino = destino;
         this.costoViaje = costoViaje;
         this.costoPasaje = costoPasaje;
-        this.horaInicio = horaInicio;
+        this.fechaHoraInicio = fechaHoraInicio;
+        this.duracionMinutos = 120;
         this.buses = new HashMap<>();
     }
 
-    // Setters
-    public void setIdViaje(int id_viaje) {
-        this.id_viaje = id_viaje;
-    }
+    public void setIdViaje(int id_viaje) { this.id_viaje = id_viaje; }
+    public void setOrigen(String origen) { this.origen = origen; }
+    public void setDestino(String destino) { this.destino = destino; }
+    public void setCostoViaje(double costoViaje) { this.costoViaje = costoViaje; }
+    public void setCostoPasaje(double costoPasaje) { this.costoPasaje = costoPasaje; }
+    public void setFechaHoraInicio(LocalDateTime fechaHoraInicio) { this.fechaHoraInicio = fechaHoraInicio; }
+    public void setDuracionMinutos(int duracionMinutos) { this.duracionMinutos = duracionMinutos; }
 
-    public void setOrigen(String origen) {
-        this.origen = origen;
-    }
+    public int getIdViaje() { return id_viaje; }
+    public String getOrigen() { return origen; }
+    public String getDestino() { return destino; }
+    public double getCostoViaje() { return costoViaje; }
+    public double getCostoPasaje() { return costoPasaje; }
+    public LocalDateTime getFechaHoraInicio() { return fechaHoraInicio; }
+    public int getDuracionMinutos() { return duracionMinutos; }
+    public LocalDateTime getFechaHoraFin() { return fechaHoraInicio.plusMinutes(duracionMinutos); }
+    public HashMap<Integer, Buses> getBuses() { return buses; }
 
-    public void setDestino(String destino) {
-        this.destino = destino;
-    }
+    // Compatibilidad con código antiguo que usaba solo hora.
+    public java.time.LocalTime getHoraInicio() { return fechaHoraInicio.toLocalTime(); }
 
-    public void setCostoViaje(double costoViaje) {
-        this.costoViaje = costoViaje;
-    }
-
-    public void setCostoPasaje(double costoPasaje) {
-        this.costoPasaje = costoPasaje;
-    }
-
-    public void setHoraInicio(LocalTime horaInicio) {
-        this.horaInicio = horaInicio;
-    }
-
-
-    // Getters
-    public int getIdViaje() {
-        return id_viaje;
-    }
-
-    public String getOrigen() {
-        return origen;
-    }
-
-    public String getDestino() {
-        return destino;
-    }
-
-    public double getCostoViaje() {
-        return costoViaje;
-    }
-
-    public double getCostoPasaje() {
-        return costoPasaje;
-    }
-
-    public LocalTime getHoraInicio() {
-        return horaInicio;
-    }
-
-
-
-    // Agregar bus al viaje
+    // SIA-5: sobrecarga adicional de agregarBus.
     public void agregarBus(Buses bus) {
-
-        if (estaDisponible()) {
-            buses.put(bus.getIdBus(), bus); // ESTE METODO NO EXISTE Hay que arreglarlo
+        if (bus != null) {
+            buses.put(bus.getIdBus(), bus);
         }
     }
 
-    // Verificar si el viaje todavía está disponible
-    public boolean estaDisponible() {
-        return LocalTime.now().isBefore(horaInicio);
+    public void agregarBus(int idBus, int capacidad) {
+        agregarBus(new Buses(idBus, capacidad));
     }
 
-    // Buscar un bus con espacio
+    public boolean eliminarBus(int idBus) {
+        return buses.remove(idBus) != null;
+    }
+
+    public boolean estaDisponible() {
+        return LocalDateTime.now().isBefore(fechaHoraInicio);
+    }
+
     public Buses buscarBusDisponible() {
-
         for (Buses bus : buses.values()) {
-
-            if (bus.getDisponibility()
-                    && bus.getCantidadPasajeros() < bus.getCapacity()) {
-
+            if (bus.getDisponibility() && bus.getCantidadPasajeros() < bus.getCapacity()) {
                 return bus;
             }
         }
-        // AQUI SE PUEDE HACER UN TRY CATCH CON LOS BUSES DISPONIBLES
         return null;
     }
 
-    // Comprobar rentabilidad
-    public boolean esRentable(Buses bus) {
-
-        double ingresos =
-                bus.getCantidadPasajeros() * costoPasaje; 
-
-        return ingresos > costoViaje;
+    public Pasajeros buscarPasajero(int id) throws ElementoNoEncontradoException {
+        for (Buses bus : buses.values()) {
+            for (Pasajeros pasajero : bus.getPasajeros()) {
+                if (pasajero.getIdPasajero() == id) return pasajero;
+            }
+        }
+        throw new ElementoNoEncontradoException("No existe el pasajero con ID " + id + " en este viaje.");
     }
 
-    // Reasignar pasajeros
+    public boolean esRentable(Buses bus) {
+        return bus != null && bus.getCantidadPasajeros() * costoPasaje > costoViaje;
+    }
+
     public void reasignarBus(Buses bus) {
-
-      
+        if (bus == null || !buses.containsKey(bus.getIdBus())) return;
         for (Buses otroBus : buses.values()) {
-
-            if (otroBus.getIdBus() == bus.getIdBus()) {
-                continue;
-            }
-
-            while (
-                otroBus.getCantidadPasajeros() < otroBus.getCapacity()
-                && bus.getCantidadPasajeros() > 0){
-
+            if (otroBus.getIdBus() == bus.getIdBus()) continue;
+            while (otroBus.getCantidadPasajeros() < otroBus.getCapacity() && bus.getCantidadPasajeros() > 0) {
                 Pasajeros pasajero = bus.obtenerPasajero(0);
-
-
                 try {
                     otroBus.agregarPasajero(pasajero);
                     bus.eliminarPasajero(pasajero);
                 } catch (CapacidadExcedidaException e) {
                     break;
-    }
+                }
             }
-
-            if ( bus.getCantidadPasajeros() <= 0) {
-                break;
-            }
+            if (bus.getCantidadPasajeros() == 0) break;
         }
     }
 
-    // Mostrar información del viaje
     public void mostrarViaje() {
-
-        System.out.println("\n--- VIAJE ---");
-        System.out.println("ID viaje: " + id_viaje);
-        System.out.println("Origen: " + origen);
-        System.out.println("Destino: " + destino);
-        System.out.println("Hora: " + horaInicio);
-        System.out.println("Costo viaje: $" + costoViaje);
-        System.out.println("Costo pasaje: $" + costoPasaje);
-
+        System.out.println(this);
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        System.out.println("Inicio: " + fechaHoraInicio.format(formato));
+        System.out.println("Fin: " + getFechaHoraFin().format(formato));
+        System.out.println("Costo viaje: $" + costoViaje + " | Costo pasaje: $" + costoPasaje);
         for (Buses bus : buses.values()) {
-
-            System.out.println(
-                "Bus " + bus.getIdBus()
-                + " | Pasajeros: "
-                + bus.getCantidadPasajeros()
-                + "/" + bus.getCapacity()
-            );
+            System.out.println("  " + bus);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Viaje " + id_viaje + " | " + origen + " -> " + destino;
     }
 }
