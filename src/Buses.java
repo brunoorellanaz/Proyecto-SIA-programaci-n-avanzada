@@ -26,7 +26,7 @@ public class Buses {
     public void setDisponibility(boolean disponibility) {
         this.disponibility = disponibility;
     }
-
+    
     // Getters
     public int getIdBus() {
         return id_bus;
@@ -39,9 +39,11 @@ public class Buses {
     public boolean getDisponibility() {
         return disponibility;
     }
+    
 
-    public ArrayList<Pasajeros> getPasajeros() {
-        return pasajeros;
+    //Obtener cantidad
+    public int getCantidadPasajeros() {
+        return pasajeros.size();
     }
 
     // Agregar pasajero
@@ -82,7 +84,10 @@ public class Buses {
 
         return false;
     }
-
+    // Retorna un pasajero segun posicion
+    public Pasajeros obtenerPasajero(int posicion) {
+        return pasajeros.get(posicion);
+    }
     // Mostrar pasajeros
     public void mostrarPasajeros() {
 

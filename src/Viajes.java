@@ -50,6 +50,7 @@ public class Viajes {
         this.horaInicio = horaInicio;
     }
 
+
     // Getters
     public int getIdViaje() {
         return id_viaje;
@@ -75,15 +76,13 @@ public class Viajes {
         return horaInicio;
     }
 
-    public HashMap<Integer, Buses> getBuses() {
-        return buses;
-    }
+
 
     // Agregar bus al viaje
     public void agregarBus(Buses bus) {
 
         if (estaDisponible()) {
-            buses.put(bus.getIdBus(), bus);
+            buses.put(bus.getIdBus(), bus); // ESTE METODO NO EXISTE Hay que arreglarlo
         }
     }
 
@@ -98,12 +97,12 @@ public class Viajes {
         for (Buses bus : buses.values()) {
 
             if (bus.getDisponibility()
-                    && bus.getPasajeros().size() < bus.getCapacity()) {
+                    && bus.getCantidadPasajeros() < bus.getCapacity()) {
 
                 return bus;
             }
         }
-
+        // AQUI SE PUEDE HACER UN TRY CATCH CON LOS BUSES DISPONIBLES
         return null;
     }
 
@@ -111,7 +110,7 @@ public class Viajes {
     public boolean esRentable(Buses bus) {
 
         double ingresos =
-                bus.getPasajeros().size() * costoPasaje;
+                bus.getCantidadPasajeros() * costoPasaje; 
 
         return ingresos > costoViaje;
     }
@@ -119,9 +118,7 @@ public class Viajes {
     // Reasignar pasajeros
     public void reasignarBus(Buses bus) {
 
-        ArrayList<Pasajeros> pasajerosBus =
-                new ArrayList<>(bus.getPasajeros());
-
+      
         for (Buses otroBus : buses.values()) {
 
             if (otroBus.getIdBus() == bus.getIdBus()) {
@@ -129,19 +126,16 @@ public class Viajes {
             }
 
             while (
-                otroBus.getPasajeros().size() < otroBus.getCapacity()
-                && !pasajerosBus.isEmpty()
-            ) {
+                otroBus.getCantidadPasajeros() < otroBus.getCapacity()
+                && bus.getCantidadPasajeros() > 0){
 
-                Pasajeros pasajero = pasajerosBus.get(0);
+                Pasajeros pasajero = otroBus.obtenerPasajero(0);
 
                 bus.eliminarPasajero(pasajero);
                 otroBus.agregarPasajero(pasajero);
-
-                pasajerosBus.remove(pasajero);
             }
 
-            if (pasajerosBus.isEmpty()) {
+            if ( bus.getCantidadPasajeros() <= 0) {
                 break;
             }
         }
@@ -163,7 +157,7 @@ public class Viajes {
             System.out.println(
                 "Bus " + bus.getIdBus()
                 + " | Pasajeros: "
-                + bus.getPasajeros().size()
+                + bus.getCantidadPasajeros()
                 + "/" + bus.getCapacity()
             );
         }

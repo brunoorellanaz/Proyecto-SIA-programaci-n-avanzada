@@ -24,6 +24,9 @@ public class Pasajeros {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+    public void setIdPasajero(int id_pasajero){
+        this.id_pasajero = id_pasajero;
+    }
 
     // Getters
     public int getIdPasajero() {

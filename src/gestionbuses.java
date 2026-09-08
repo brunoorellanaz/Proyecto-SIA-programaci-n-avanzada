@@ -21,6 +21,17 @@ public class gestionbuses {
         listaBuses.add(new Buses(3, 50));
     }
 
+    // SETTERS
+    
+    public void setContadorViajes(int contadorViajes){
+        this.contadorViajes = contadorViajes;
+    }
+    
+    //GETTERS
+    public int getContadorViajes(){
+        return contadorViajes;
+    }
+
     // =====================================================
     // RESERVAR VIAJE
     // =====================================================
@@ -314,7 +325,7 @@ public class gestionbuses {
             System.out.println(
                 "Bus " + bus.getIdBus()
                 + " | Capacidad: "
-                + bus.getPasajeros().size()
+                + bus.getCantidadPasajeros()
                 + "/" + bus.getCapacity()
                 + " | Disponible: "
                 + bus.getDisponibility()
@@ -328,11 +339,9 @@ public class gestionbuses {
 
     public void mostrarViajes() {
 
-        if (listaViajes.isEmpty()) {
+        if (listaViajes.isEmpty()) { //Curiospo
 
-            System.out.println(
-                "No existen viajes registrados."
-            );
+            System.out.println("No existen viajes registrados.");
 
             return;
         }
