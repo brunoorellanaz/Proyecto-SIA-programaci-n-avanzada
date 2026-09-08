@@ -3,10 +3,9 @@ import java.time.LocalTime;
 
 public class gestionbuses {
 
-    private ArrayList<Buses> listaBuses;
+    private ArrayList<Buses> listaBuses; //flota base
     private ArrayList<Pasajeros> listaPasajeros;
     private ArrayList<Viajes> listaViajes;
-
     private int contadorViajes = 1;
 
     public gestionbuses() {
@@ -15,11 +14,12 @@ public class gestionbuses {
         listaPasajeros = new ArrayList<>();
         listaViajes = new ArrayList<>();
 
-        // Buses iniciales
+        // flota base: la empresa tiene estos buses actualmente y se guardan en (id + capacidad)
         listaBuses.add(new Buses(1, 40));
         listaBuses.add(new Buses(2, 40));
         listaBuses.add(new Buses(3, 50));
     }
+
 
     // SETTERS
     
@@ -31,6 +31,7 @@ public class gestionbuses {
     public int getContadorViajes(){
         return contadorViajes;
     }
+
 
     // =====================================================
     // RESERVAR VIAJE
@@ -44,13 +45,9 @@ public class gestionbuses {
             String destino,
             String fechaHora) {
 
-        // Crear pasajero
-        Pasajeros pasajero =
-                new Pasajeros(idPasajero, edad, nombre);
-
         // Convertir hora
         LocalTime hora;
-
+        
         try {
 
             String horaString = fechaHora;
@@ -75,13 +72,10 @@ public class gestionbuses {
 
         // Buscar un viaje existente
         Viajes viajeEncontrado = null;
-
         for (Viajes viaje : listaViajes) {
-
             if (viaje.getOrigen().equalsIgnoreCase(origen)
                     && viaje.getDestino().equalsIgnoreCase(destino)
                     && viaje.getHoraInicio().equals(hora)) {
-
                 viajeEncontrado = viaje;
                 break;
             }
@@ -89,7 +83,6 @@ public class gestionbuses {
 
         // Si no existe, crear uno
         if (viajeEncontrado == null) {
-
             viajeEncontrado = new Viajes(
                     contadorViajes++,
                     origen,
@@ -98,12 +91,12 @@ public class gestionbuses {
                     5000,
                     hora
             );
-
             // Agregar todos los buses disponibles al viaje
-            for (Buses bus : listaBuses) {
-                viajeEncontrado.agregarBus(bus);
+            //cada viaje recibe sus propios buses que son copias de la flota actual disponible
+            //y no el objeto bus compartido, asi la ocupación no se filtra entre viajes
+            for (Buses busBase : listaBuses) {
+                viajeEncontrado.agregarBus(new Buses(busBase.getIdBus(), busBase.getCapacity()));
             }
-
             listaViajes.add(viajeEncontrado);
         }
 
@@ -130,34 +123,16 @@ public class gestionbuses {
             return;
         }
 
-        // Agregar pasajero
-        if (busDisponible.agregarPasajero(pasajero)) {
-
+        //Agregar pasajero
+        try {
+            Pasajeros pasajero = busDisponible.agregarPasajero(idPasajero, edad, nombre);
             listaPasajeros.add(pasajero);
-
-            System.out.println(
-                "\nViaje reservado con éxito."
-            );
-
-            System.out.println(
-                "Pasajero: " + nombre
-            );
-
-            System.out.println(
-                "Bus asignado: "
-                + busDisponible.getIdBus()
-            );
-
-            System.out.println(
-                "Viaje ID: "
-                + viajeEncontrado.getIdViaje()
-            );
-
-        } else {
-
-            System.out.println(
-                "No se pudo realizar la reserva."
-            );
+            System.out.println("\nViaje reservado con exito");
+            System.out.println("Pasajero: " + nombre);
+            System.out.println("Bus asignado : " + busDisponible.getIdBus());
+            System.out.println("Viaje ID: " + viajeEncontrado.getIdViaje());
+        } catch(CapacidadExcedidaException error) {
+            System.out.println("No se pudo reservar: " + error.getMessage());
         }
     }
 
@@ -166,38 +141,17 @@ public class gestionbuses {
     // =====================================================
 
     public void cancelarViaje(int idReserva) {
-
-    Pasajeros pasajeroEncontrado = null;
-
-    for (Pasajeros pasajero : listaPasajeros) {
-
-        if (pasajero.getIdPasajero() == idReserva) {
-            pasajeroEncontrado = pasajero;
-            break;
+        try {
+            Pasajeros pasajero = buscarPasajero(idReserva);
+            Buses bus = pasajero.getBus();
+            if (bus != null) {
+                bus.eliminarPasajero(pasajero);
+            }
+            listaPasajeros.remove(pasajero);
+            System.out.println("Reserva " + idReserva + " cancelada correctamente");
+        } catch (ElementoNoEncontradoException error) {
+            System.out.println(error.getMessage());
         }
-    }
-
-    if (pasajeroEncontrado == null) {
-
-        System.out.println(
-            "No se encontró la reserva."
-        );
-
-        return;
-    }
-
-    Buses bus = pasajeroEncontrado.getBus();
-
-    if (bus != null) {
-        bus.eliminarPasajero(pasajeroEncontrado);
-    }
-
-    listaPasajeros.remove(pasajeroEncontrado);
-
-    System.out.println(
-        "Reserva " + idReserva
-        + " cancelada correctamente."
-    );
     }
 
     // =====================================================
@@ -287,31 +241,47 @@ public class gestionbuses {
             return;
         }
 
-        // Sacar del bus anterior
-        Buses busAnterior =
-                pasajeroEncontrado.getBus();
-
-        if (busAnterior != null) {
-            busAnterior.eliminarPasajero(pasajeroEncontrado);
+        // Sacar del bus anterior y agregar al nuevo
+        try {
+            Buses busAnterior = pasajeroEncontrado.getBus();
+            nuevoBus.agregarPasajero(pasajeroEncontrado);
+            if (busAnterior != null) {
+                busAnterior.eliminarPasajero(pasajeroEncontrado);
+            }
+            System.out.println("Reserva " + idReserva + " reagendada correctamente");
+            System.out.println("Nueva hora: " + nuevaHora);
+            System.out.println("Nuevo bus: " + nuevoBus.getIdBus());
+        } catch (CapacidadExcedidaException error) {
+            System.out.println("No se pudo reagendar: " + error.getMessage());
         }
-
-        // Agregar al nuevo bus
-        nuevoBus.agregarPasajero(pasajeroEncontrado);
-
-        System.out.println(
-            "Reserva " + idReserva
-            + " reagendada correctamente."
-        );
-
-        System.out.println(
-            "Nueva hora: " + nuevaHora
-        );
-
-        System.out.println(
-            "Nuevo bus: " + nuevoBus.getIdBus()
-        );
     }
 
+    // =====================================================
+    // BUSCAR PASAJEROS | SOBRECARGA 1
+    // =====================================================
+    // Búsqueda por ID del pasajero
+    public Pasajeros buscarPasajero(int id) throws ElementoNoEncontradoException {
+        for (Pasajeros p : listaPasajeros) {
+            if (p.getIdPasajero() == id) {
+                return p;
+            }
+        }
+        throw new ElementoNoEncontradoException("No existe el pasajero con id " + id);
+    }
+
+    // =====================================================
+    // BUSCAR PASAJEROS | SOBRECARGA 2
+    // =====================================================
+    // Búsqueda por nombre del pasajero
+    public Pasajeros buscarPasajero(String nombre) throws ElementoNoEncontradoException {
+        for (Pasajeros p : listaPasajeros) {
+            if (p.getNombre().equalsIgnoreCase(nombre)) {
+                return p;
+            }
+        }
+        throw new ElementoNoEncontradoException("No existe un pasajero con nombre " + nombre);
+    }
+    
     // =====================================================
     // MOSTRAR BUSES
     // =====================================================

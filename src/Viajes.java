@@ -129,7 +129,8 @@ public class Viajes {
                 otroBus.getCantidadPasajeros() < otroBus.getCapacity()
                 && bus.getCantidadPasajeros() > 0){
 
-                Pasajeros pasajero = otroBus.obtenerPasajero(0);
+                Pasajeros pasajero = bus.obtenerPasajero(0);
+
 
                 bus.eliminarPasajero(pasajero);
                 otroBus.agregarPasajero(pasajero);
