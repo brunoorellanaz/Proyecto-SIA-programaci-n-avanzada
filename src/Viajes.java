@@ -24,7 +24,8 @@ public class Viajes {
         this.duracionMinutos = 120;
         this.buses = new HashMap<>();
     }
-
+    
+    //Setters
     public void setIdViaje(int id_viaje) { this.id_viaje = id_viaje; }
     public void setOrigen(String origen) { this.origen = origen; }
     public void setDestino(String destino) { this.destino = destino; }
@@ -32,7 +33,8 @@ public class Viajes {
     public void setCostoPasaje(double costoPasaje) { this.costoPasaje = costoPasaje; }
     public void setFechaHoraInicio(LocalDateTime fechaHoraInicio) { this.fechaHoraInicio = fechaHoraInicio; }
     public void setDuracionMinutos(int duracionMinutos) { this.duracionMinutos = duracionMinutos; }
-
+    
+    //Getters
     public int getIdViaje() { return id_viaje; }
     public String getOrigen() { return origen; }
     public String getDestino() { return destino; }
@@ -41,7 +43,7 @@ public class Viajes {
     public LocalDateTime getFechaHoraInicio() { return fechaHoraInicio; }
     public int getDuracionMinutos() { return duracionMinutos; }
     public LocalDateTime getFechaHoraFin() { return fechaHoraInicio.plusMinutes(duracionMinutos); }
-    public HashMap<Integer, Buses> getBuses() { return buses; }
+    
 
     // Compatibilidad con código antiguo que usaba solo hora.
     public java.time.LocalTime getHoraInicio() { return fechaHoraInicio.toLocalTime(); }
@@ -56,7 +58,8 @@ public class Viajes {
     public void agregarBus(int idBus, int capacidad) {
         agregarBus(new Buses(idBus, capacidad));
     }
-
+    
+    
     public boolean eliminarBus(int idBus) {
         return buses.remove(idBus) != null;
     }
@@ -64,7 +67,10 @@ public class Viajes {
     public boolean estaDisponible() {
         return LocalDateTime.now().isBefore(fechaHoraInicio);
     }
-
+    
+    public boolean tieneBus(int idBus) {
+        return buses.containsKey(idBus);
+    }
     public Buses buscarBusDisponible() {
         for (Buses bus : buses.values()) {
             if (bus.getDisponibility() && bus.getCantidadPasajeros() < bus.getCapacity()) {
@@ -76,8 +82,10 @@ public class Viajes {
 
     public Pasajeros buscarPasajero(int id) throws ElementoNoEncontradoException {
         for (Buses bus : buses.values()) {
-            for (Pasajeros pasajero : bus.getPasajeros()) {
-                if (pasajero.getIdPasajero() == id) return pasajero;
+            for(int i = 0; i < bus.getCantidadPasajeros(); i++){
+                Pasajeros pasajero = bus.obtenerPasajero(i);
+
+                if(pasajero.getIdPasajero() == id) return pasajero;
             }
         }
         throw new ElementoNoEncontradoException("No existe el pasajero con ID " + id + " en este viaje.");
@@ -103,7 +111,13 @@ public class Viajes {
             if (bus.getCantidadPasajeros() == 0) break;
         }
     }
-
+     
+    public Buses obtenerBus(int idBus) {
+        return buses.get(idBus);
+    }
+    public int getCantidadBuses() {
+        return buses.size();
+    }
     public void mostrarViaje() {
         System.out.println(this);
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");

@@ -117,7 +117,7 @@ public class gestionbuses {
     public boolean eliminarBus(int id) throws ElementoNoEncontradoException {
         Buses bus = buscarBus(id);
         for (Viajes viaje : listaViajes) {
-            if (viaje.getBuses().containsKey(id) && viaje.estaDisponible()) {
+            if (viaje.tieneBus(id) && viaje.estaDisponible()) {
                 throw new IllegalArgumentException("El bus está asignado a un viaje futuro y no puede eliminarse.");
             }
         }
@@ -163,7 +163,7 @@ public class gestionbuses {
     private boolean busDisponibleEnHorario(int idBus, LocalDateTime inicio, LocalDateTime fin, Integer excluirViaje) {
         for (Viajes viaje : listaViajes) {
             if (excluirViaje != null && viaje.getIdViaje() == excluirViaje) continue;
-            if (!viaje.getBuses().containsKey(idBus)) continue;
+            if (!viaje.tieneBus(idBus)) continue;
             boolean seCruzan = inicio.isBefore(viaje.getFechaHoraFin()) && fin.isAfter(viaje.getFechaHoraInicio());
             if (seCruzan) return false;
         }
@@ -189,11 +189,16 @@ public class gestionbuses {
     public boolean eliminarViaje(int id) throws ElementoNoEncontradoException {
         Viajes viaje = buscarViaje(id);
         if (!viaje.estaDisponible()) throw new IllegalArgumentException("No se puede eliminar un viaje que ya comenzó.");
-        for (Buses bus : viaje.getBuses().values()) {
-            for (Pasajeros pasajero : bus.getPasajeros()) {
-                listaPasajeros.remove(pasajero);
+        for(int i = 0; i < viaje.getCantidadBuses(); i++){
+            Buses bus = viaje.obtenerBus(i);
+            while(bus.getCantidadPasajeros() > 0){
+                Pasajeros pasajero = bus.obtenerPasajero(0);
+                bus.eliminarPasajero(pasajero);
             }
         }
+
+
+
         return listaViajes.remove(viaje);
     }
 
@@ -201,7 +206,7 @@ public class gestionbuses {
         StringBuilder sb = new StringBuilder("=== VIAJES ===\n");
         for (Viajes viaje : listaViajes) {
             sb.append(viaje).append(" | Inicio: ").append(viaje.getFechaHoraInicio().format(FORMATO))
-              .append(" | Buses: ").append(viaje.getBuses().size()).append("\n");
+              .append(" | Buses: ").append(viaje.getCantidadBuses()).append("\n");
         }
         if (listaViajes.isEmpty()) sb.append("No existen viajes registrados.\n");
         return sb.toString();
@@ -304,7 +309,8 @@ public class gestionbuses {
     public ArrayList<Viajes> obtenerViajesRentables() {
         ArrayList<Viajes> resultado = new ArrayList<>();
         for (Viajes viaje : listaViajes) {
-            for (Buses bus : viaje.getBuses().values()) {
+            for (int i = 0; i < viaje.getCantidadBuses() ; i++) {
+                Buses bus = viaje.obtenerBus(i);
                 if (viaje.esRentable(bus)) {
                     resultado.add(viaje);
                     break;

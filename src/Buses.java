@@ -12,20 +12,23 @@ public class Buses {
         this.disponibility = true;
         this.pasajeros = new ArrayList<>();
     }
-
+        
+    //Setters
     public void setIdBus(int id_bus) { this.id_bus = id_bus; }
     public void setCapacity(int capacity) {
         this.capacity = capacity;
         this.disponibility = pasajeros.size() < capacity;
     }
     public void setDisponibility(boolean disponibility) { this.disponibility = disponibility; }
-
+    
+    //Getters
     public int getIdBus() { return id_bus; }
     public int getCapacity() { return capacity; }
     public boolean getDisponibility() { return disponibility; }
-    public ArrayList<Pasajeros> getPasajeros() { return pasajeros; }
     public int getCantidadPasajeros() { return pasajeros.size(); }
+    
 
+    //Demas metodos
     public void agregarPasajero(Pasajeros nuevo_pasajero) throws CapacidadExcedidaException {
         if (nuevo_pasajero == null) {
             throw new IllegalArgumentException("El pasajero no puede ser nulo.");
