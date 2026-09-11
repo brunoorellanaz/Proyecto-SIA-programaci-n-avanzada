@@ -9,7 +9,9 @@ public class main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         gestionbuses gestion = new gestionbuses();
-        gestion.cargarDesdeArchivo(ARCHIVO);
+
+        gestion.setArchivo(ARCHIVO);
+        gestion.cargarDesdeArchivo(ARCHIVO);;
 
         System.out.println("========================================");
         System.out.println(" SISTEMA DE INFORMACIÓN - SIA");
