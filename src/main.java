@@ -21,10 +21,12 @@ public class main {
         String opcion = scanner.nextLine().trim();
         if (opcion.equals("2")) {
             scanner.close();
-            javax.swing.SwingUtilities.invokeLater(() -> new VentanaPrincipal(gestion, ARCHIVO).setVisible(true));
-        } else {
+            javax.swing.SwingUtilities.invokeLater(() -> new mainVentana(gestion, ARCHIVO).setVisible(true));
+        } else if(opcion.equals("1")) {
             ejecutarConsola(scanner, gestion, ARCHIVO);
             scanner.close();
+        }else{
+            System.out.println("Opción no valida, saliendo del programa.");
         }
     }
 

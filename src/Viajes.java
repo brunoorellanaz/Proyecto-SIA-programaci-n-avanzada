@@ -117,6 +117,9 @@ public class Viajes {
     }
     public int getCantidadBuses() {
         return buses.size();
+    }  
+    public Buses obtenerBusPorPosicion(int posicion) {
+        return (Buses) buses.values().toArray()[posicion];
     }
     public void mostrarViaje() {
         System.out.println(this);
