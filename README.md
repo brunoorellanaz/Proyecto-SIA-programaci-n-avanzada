@@ -1,26 +1,25 @@
-# Gestión de Pasajeros y buses en una empresa de transporte.
+# Guía de instalación para proyecto: Llegamos tarde S.A.
 
-## Principales datos a usar:  
-  - Clase para los buses:
-    * Numero de viaje: _Viaje_.
-    * ID del bus: _Int_.
-    * Capacidad del bus: _Int_.
-    * Disponibilidad: _Bool_.
-  - Clase para los pasajeros:
-    * ID del pasajero: _Int_.
-    * Edad del pasajero: _Int_.
-    * Nombre del pasajero: _String_.
-    * Numero de bus: _Bus_.
-    * ...algomas.
-  - Clase para el viaje:
-    * ID de viaje: _Int_.
-    * Origen: _String_.
-    * Destino: _String_.
-    * Disponibilidad: _Bool_.
-## Principales funcionalidades:
-  - Reservar viaje.
-    * Agregar origen y destino.
-    * Dia y hora.
-  - Cancelar viaje.
-  - Reagendar viaje.
+Este readme detalla los pasos para poder instalar, compilar y ejecutar este proyecto
 
+## 1. Requisitos de instalación
+
+* Java Development Kit 8 (JDK 8)
+* Apache NetBeans IDE 12.0
+
+## 2. Instalación y configuración del proyecto
+
+Para poder importar el proyecto al IDE se deben seguir los siguientes pasos:
+
+1. Abrir Apache NetBeans 12.0
+2. Descargar el archivo .zip 'Llegamos tarde.zip' que contiene nuestro proyecto
+3. Ir al menú superior y luego seleccionar 'File' -> 'Import Project' -> 'From ZIP...'
+4. En la sección de 'zip file' buscar y seleccionar el archivo .zip y en Folder elegir dónde quieres guardar el proyecto
+5. Dar click en Import
+
+**Si da un error de Project Problems, ignorar y dar a cancelar ya que este no afecta al funcionamiento del programa**
+
+## 3. Compilación y ejecución
+
+-Para ejecutar el programa simplemente ve al menú superior y da click en la flecha de play verde, o aprieta el botón F6.
+-Selecciona si deseas abrirlo en modo consola o ventana.
