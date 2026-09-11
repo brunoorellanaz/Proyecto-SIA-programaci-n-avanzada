@@ -22,4 +22,5 @@ Para poder importar el proyecto al IDE se deben seguir los siguientes pasos:
 ## 3. Compilación y ejecución
 
 -Para ejecutar el programa simplemente ve al menú superior y da click en la flecha de play verde, o aprieta el botón F6.
+
 -Selecciona si deseas abrirlo en modo consola o ventana.
