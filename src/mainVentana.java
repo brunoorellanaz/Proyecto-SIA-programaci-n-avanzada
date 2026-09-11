@@ -40,7 +40,7 @@ public class mainVentana extends javax.swing.JFrame {
 
         tituloVentana.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         tituloVentana.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        tituloVentana.setText("Nombre del programa");
+        tituloVentana.setText("Llegamos Tarde S.A.");
 
         gestionPasajeros.setText("Gestion de Pasajeros");
         gestionPasajeros.addActionListener(new java.awt.event.ActionListener() {

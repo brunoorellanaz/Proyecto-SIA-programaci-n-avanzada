@@ -4,12 +4,8 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/bruno/OneDrive/Documentos/NetBeansProjects/GestionBuses/src/main.java</file>
-            <file>file:/C:/Users/bruno/OneDrive/Documentos/NetBeansProjects/GestionBuses/src/mostrarViajesVentana.java</file>
-            <file>file:/C:/Users/bruno/OneDrive/Documentos/NetBeansProjects/GestionBuses/src/mostrarPasajerosVentana.java</file>
-            <file>file:/C:/Users/bruno/OneDrive/Documentos/NetBeansProjects/GestionBuses/src/gestionbuses.java</file>
-            <file>file:/C:/Users/bruno/OneDrive/Documentos/NetBeansProjects/GestionBuses/src/GestionBusesVentana.java</file>
-            <file>file:/C:/Users/bruno/OneDrive/Documentos/NetBeansProjects/GestionBuses/src/GestionViajesVentana.java</file>
-            <file>file:/C:/Users/bruno/OneDrive/Documentos/NetBeansProjects/GestionBuses/src/GestionPasajerosVentana.java</file>
+            <file>file:/C:/Users/bruno/OneDrive/Documentos/NetBeansProjects/GestionBuses/src/CargarDatos.java</file>
+            <file>file:/C:/Users/bruno/OneDrive/Documentos/NetBeansProjects/GestionBuses/src/GuardarDatos.java</file>
             <file>file:/C:/Users/bruno/OneDrive/Documentos/NetBeansProjects/GestionBuses/src/mainVentana.java</file>
         </group>
     </open-files>
