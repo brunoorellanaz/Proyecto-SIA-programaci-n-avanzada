@@ -22,9 +22,32 @@ public class gestionbuses {
     }
 
     private void cargarDatosIniciales() {
-        listaBuses.add(new Buses(1, 40));
-        listaBuses.add(new Buses(2, 40));
-        listaBuses.add(new Buses(3, 50));
+        Buses bus1 = new Buses(1, 40);
+        Buses bus2 = new Buses(2, 40);
+        Buses bus3 = new Buses(3, 50);
+        listaBuses.add(bus1);
+        listaBuses.add(bus2);
+        listaBuses.add(bus3);
+
+        Viajes viajeEjemplo = new Viajes(
+                contadorViajes++,
+                "Valparaiso",
+                "Santiago",
+                3000,
+                5000,
+                LocalDateTime.now().plusDays(1));
+        
+        Buses busEj = new Buses(bus1.getIdBus(), bus1.getCapacity());
+        viajeEjemplo.agregarBus(busEj);
+        
+        try {
+            Pasajeros pasajeroEj = busEj.agregarPasajero(1, 30, "Pasajero Ejemplo");
+            listaPasajeros.add(pasajeroEj);
+        } catch (CapacidadExcedidaException error){
+            System.out.println("No se pudo cargar el pasajero de ejemplo: " + error.getMessage());
+        }
+        
+        listaViajes.add(viajeEjemplo);
     }
 
     public void setContadorViajes(int contadorViajes) { this.contadorViajes = contadorViajes; }

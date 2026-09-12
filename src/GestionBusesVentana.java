@@ -36,6 +36,7 @@ public class GestionBusesVentana extends javax.swing.JFrame {
         addBus = new javax.swing.JButton();
         deleteBus = new javax.swing.JButton();
         getBuses = new javax.swing.JButton();
+	modBus = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -73,6 +74,13 @@ public class GestionBusesVentana extends javax.swing.JFrame {
             }
         });
 
+	modBus.setText("Modificar Bus");
+	modBus.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		modBusActionPerformed(evt);
+	    }
+	});
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -86,7 +94,8 @@ public class GestionBusesVentana extends javax.swing.JFrame {
                             .addComponent(tituloVentana2)
                             .addComponent(deleteBus, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(getBuses, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(addBus, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(addBus, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+			    .addComponent(modBus, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jButton3))
                 .addContainerGap(231, Short.MAX_VALUE))
         );
@@ -101,6 +110,8 @@ public class GestionBusesVentana extends javax.swing.JFrame {
                 .addComponent(deleteBus, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(getBuses, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+		.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+		.addComponent(modBus, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(52, 52, 52)
                 .addComponent(jButton3)
                 .addContainerGap(39, Short.MAX_VALUE))
@@ -212,6 +223,26 @@ public class GestionBusesVentana extends javax.swing.JFrame {
         this.setVisible(false);
     }//GEN-LAST:event_getBusesActionPerformed
 
+    private void modBusActionPerformed(java.awt.event.ActionEvent evt) {
+	String idTexto = JOptionPane.showInputDialog(this, "Ingrese ID del bus a modificar:");
+	String capacidadTexto = JOptionPane.showInputDialog(this, "Ingrese la nueva capacidad");
+
+	try {
+	    int id = Integer.parseInt(idTexto);
+	    int nuevaCapacidad = Integer.parseInt(capacidadTexto);
+
+	    gestion.modificarBus(id, nuevaCapacidad);
+
+	    JOptionPane.showMessageDialog(this, "Bus modificado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+	} catch (NumberFormatException e) {
+	    JOptionPane.showMessageDialog(this, "El ID y la capacidad deben ser números", "Error", JOptionPane.ERROR_MESSAGE);
+	} catch (ElementoNoEncontradoException e) {
+	    JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	} catch (IllegalArgumentException e) {
+	    JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	}
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -222,6 +253,7 @@ public class GestionBusesVentana extends javax.swing.JFrame {
     private javax.swing.JButton deleteBus;
     private javax.swing.JButton getBuses;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton modBus;
     private javax.swing.JLabel tituloVentana2;
     // End of variables declaration//GEN-END:variables
 }

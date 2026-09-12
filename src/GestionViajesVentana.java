@@ -11,6 +11,8 @@
 import javax.swing.JOptionPane;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+
 public class GestionViajesVentana extends javax.swing.JFrame {
     private gestionbuses gestion;
     private String archivo;
@@ -37,6 +39,8 @@ public class GestionViajesVentana extends javax.swing.JFrame {
         addViaje = new javax.swing.JButton();
         deleteViaje = new javax.swing.JButton();
         getViajes = new javax.swing.JButton();
+	modViaje = new javax.swing.JButton();
+	viajesRentables = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -73,6 +77,20 @@ public class GestionViajesVentana extends javax.swing.JFrame {
             }
         });
 
+	modViaje.setText("Modificar Viaje");
+	modViaje.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		modViajeActionPerformed(evt);
+	    }
+	}); 
+
+	viajesRentables.setText("Viajes Rentables");
+	viajesRentables.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		viajesRentablesActionPerformed(evt);
+	    }
+	});
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -90,7 +108,9 @@ public class GestionViajesVentana extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                             .addComponent(addViaje, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(deleteViaje, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(getViajes, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(getViajes, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+			    .addComponent(modViaje, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+			    .addComponent(viajesRentables, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(208, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -104,7 +124,11 @@ public class GestionViajesVentana extends javax.swing.JFrame {
                 .addComponent(deleteViaje, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(getViajes, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+		.addComponent(modViaje, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+		.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+		.addComponent(viajesRentables, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+		.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
                 .addComponent(backToMenu)
                 .addContainerGap())
         );
@@ -236,13 +260,58 @@ public class GestionViajesVentana extends javax.swing.JFrame {
         this.setVisible(false);
     }//GEN-LAST:event_getViajesActionPerformed
 
+    private void modViajeActionPerformed(java.awt.event.ActionEvent evt){
+	String idTexto = JOptionPane.showInputDialog(this, "Ingrese ID del viaje a modificar:");
+	String origen = JOptionPane.showInputDialog(this, "Ingrese el nuevo origen:");
+	String destino = JOptionPane.showInputDialog(this, "Ingrese el nuevo destino:");
+	String costoViajeTexto = JOptionPane.showInputDialog(this, "Ingrese el nuevo costo del viaje:");
+	String costoPasajeTexto = JOptionPane.showInputDialog(this, "Ingrese el nuevo costo del pasaje:");
+	String fechaTexto = JOptionPane.showInputDialog(this, "Ingrese nueva fecha y hora (dd/MM/yyyy HH:mm):");
 
+	try {
+	    int id = Integer.parseInt(idTexto);
+	    double costoViaje = Double.parseDouble(costoViajeTexto);
+	    double costoPasaje = Double.parseDouble(costoPasajeTexto);
+
+	    LocalDateTime fechaHora = LocalDateTime.parse(fechaTexto,
+		java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+	    
+	    gestion.modificarViaje(id, origen, destino, costoViaje, costoPasaje, fechaHora);
+
+	    JOptionPane.showMessageDialog(this, "Viaje modificado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+	} catch(DateTimeParseException e) {
+	    JOptionPane.showMessageDialog(this, "La fecha debe tener el formato dd/MM/yyyy HH:mm", "Error", JOptionPane.ERROR_MESSAGE);
+	} catch(ElementoNoEncontradoException e) {
+	    JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	} catch(IllegalArgumentException e) {
+	    JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	}
+    }
+
+    private void viajesRentablesActionPerformed(java.awt.event.ActionEvent evt) {
+	ArrayList<Viajes> rentables = gestion.obtenerViajesRentables();
+
+	if (rentables.isEmpty()) {
+	    JOptionPane.showMessageDialog(this, "No hay viajes que cumplan el criterio de rentabilidad.", "Viajes rentables",
+		JOptionPane.INFORMATION_MESSAGE);
+	    return;
+	}
+
+	StringBuilder sb = new StringBuilder();
+	for (Viajes viaje : rentables) {
+	    sb.append(viaje).append("\n");
+	}
+
+	JOptionPane.showMessageDialog(this, sb.toString(), "Viajes rentables", JOptionPane.INFORMATION_MESSAGE);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addViaje;
     private javax.swing.JButton backToMenu;
     private javax.swing.JButton deleteViaje;
     private javax.swing.JButton getViajes;
+    private javax.swing.JButton modViaje;
+    private javax.swing.JButton viajesRentables;
     private javax.swing.JLabel tituloVentana2;
     // End of variables declaration//GEN-END:variables
 }

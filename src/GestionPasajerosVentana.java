@@ -160,45 +160,46 @@ public class GestionPasajerosVentana extends javax.swing.JFrame {
     }//GEN-LAST:event_deletePasajeroActionPerformed
 
     private void addPasajeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPasajeroActionPerformed
-        String idTexto = JOptionPane.showInputDialog(this, "Ingrese ID del pasajero:");
-        int id = Integer.parseInt(idTexto);
-        
+        String idTexto = JOptionPane.showInputDialog(this, "Ingrese ID del pasajero:");        
         String nombre = JOptionPane.showInputDialog(this, "Ingrese nombre del pasajero:");
-        
         String edadTexto = JOptionPane.showInputDialog(this, "Ingrese edad del pasajero:");
-        int edad = Integer.parseInt(edadTexto);
-        
         String origen = JOptionPane.showInputDialog(this, "Ingrese origen:");
-        
-        String destino = JOptionPane.showInputDialog(this, "Ingrese destino:");        
-        
+	String destino = JOptionPane.showInputDialog(this, "Ingrese destino:");        
         String fechaHora = JOptionPane.showInputDialog(
             this, "Ingrese fecha y hora (dd/MM/yyyy HH:mm):" );
         
-        boolean resultado = gestion.reservarViaje(
-            id,
-            nombre,
-            edad,
-            origen,
-            destino,
-            fechaHora
-        );
+
+	try {
+	    int id = Integer.parseInt(idTexto);
+	    int edad = Integer.parseInt(edadTexto);
+
+            boolean resultado = gestion.reservarViaje(
+                id,
+                nombre,
+                edad,
+                origen,
+                destino,
+                fechaHora
+            );
         
-        if (resultado) {
-        JOptionPane.showMessageDialog(
-                this,
-                "Pasajero agregado correctamente.",
-                "Éxito",
-                JOptionPane.INFORMATION_MESSAGE
-        );
-        } else {
+            if (resultado) {
             JOptionPane.showMessageDialog(
                     this,
-                    "No se pudo agregar el pasajero.",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
+                    "Pasajero agregado correctamente.",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE
             );
-        }
+            } else {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "No se pudo agregar el pasajero.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
+	    }
+        } catch (NumberFormatException e) {
+	    JOptionPane.showMessageDialog(this, "El ID y la edad deben ser números.", "Error", JOptionPane.ERROR_MESSAGE);
+	}
     }//GEN-LAST:event_addPasajeroActionPerformed
 
     private void backMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backMenuActionPerformed
